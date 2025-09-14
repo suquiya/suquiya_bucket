@@ -1,0 +1,9 @@
+{
+    "version": "1.0.0",
+    "description": "description",
+    "homepage": "https://github.com/suquiya/psutil",
+    "license": "The Unlicense",
+    "url": "",
+    "hash": "",
+    "bin": ["xxx.ps1"]
+}
