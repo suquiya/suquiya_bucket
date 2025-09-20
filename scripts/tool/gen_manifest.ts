@@ -26,5 +26,10 @@ async function main() {
     } else {
       return url.split("/");
     }
+  }).filter((url)=>{
+    // 念のためユーザーネームの誤りを排除
+    return ["yuru7", "miiton"].includes(url[0]);
   });
+
+
 }
