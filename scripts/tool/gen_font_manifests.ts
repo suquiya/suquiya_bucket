@@ -200,7 +200,10 @@ async function main() {
           Deno.removeSync(manifest_url);
         }
 
-        Deno.writeTextFileSync(manifest_url, JSON.stringify(manifest, null, 2));
+        Deno.writeTextFileSync(
+          manifest_url,
+          JSON.stringify(manifest, null, 2) + "\r\n",
+        );
       }
       console.log(
         `${repo.user_name}/${repo.repository_name}: created ${assets.length} manifests`,
