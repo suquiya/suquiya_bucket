@@ -1,7 +1,7 @@
 import { graphql } from "@octokit/graphql";
 import { Repository } from "@octokit/graphql-schema";
-import { createTemplaterFromUrl, ManifestParams } from "./manifest.ts";
 import { calc_url_body_hash } from "./ufh.ts";
+import { createFontManifest, FontManifestParams } from "./font_manifest.ts";
 
 if (import.meta.main) {
   main();
@@ -72,8 +72,6 @@ async function main() {
     },
   });
 
-  const template_url = resolve("../../bucket/font-install.json.template");
-
   const query = `query getRepoAndLatestRelease($owner: String!, $name: String!){
         repository(owner: $owner, name: $name){
                 name,
@@ -100,68 +98,128 @@ async function main() {
         }
     }`;
 
-  const templater = await createTemplaterFromUrl(template_url);
+  const fallback_query = `
+    query getLastRelease($owner: String!, $name: String!) {
+        repository(owner: $owner, name: $name) {
+            releases(first: 1, orderBy: {field: CREATED_AT, direction: DESC}) {
+                nodes {
+                    tagName
+                    description
+                    id
+                    resourcePath
+                    releaseAssets(first: 10) {
+                        nodes {
+                            contentType
+                            downloadUrl
+                            id
+                            name
+                            size
+                            digest
+                        }
+                    }
+                }
+            }
+        }
+    }
+  `;
 
   const licenseMap = getLicenseMap();
 
-  for (const repo of target_repos.slice(0, 1)) {
-    const data = await gql<{ repository: Repository }>(query, {
-      owner: repo.user_name,
-      name: repo.repository_name,
-    }).then((res) => res.repository);
-
-    let license = data.licenseInfo!.spdxId!;
-    if (license.length === 0 || license === "NOASSERTION") {
-      const l = licenseMap.get(repo.repository_name);
-      if (l === undefined) {
-        console.log(`no license for ${repo.repository_name}`);
-      } else {
-        license = l;
-      }
-    }
-
-    const filterStr = data.name.replaceAll("-", "");
-
-    const tagName = data.latestRelease!.tagName!;
-    const description = data.description!;
-
-    const version = tagName.replace("v", "");
-
-    const assets = data.latestRelease!.releaseAssets!.nodes!.filter((asset) => {
-      return asset !== null;
-    }).filter((asset) => {
-      return asset.name.toUpperCase().includes(filterStr.toUpperCase());
-    });
-
-    const bucketDirPath = "../../bucket/";
-
-    for (const asset of assets) {
-      const downloadUrl = asset.downloadUrl!;
-      const hash = ("digest" in asset && typeof asset.digest === "string")
-        ? asset.digest
-        : await calc_url_body_hash(downloadUrl);
-
-      const file_name = getFileName(downloadUrl);
-      const autoupdate_file_name = file_name.replaceAll(version, "\$version");
-
-      const manifest_name = asset.name.replaceAll(`_v${version}`, "")
-        .replaceAll(`v${version}`, "").replaceAll(version, "");
-      const params: ManifestParams = {
-        version: version,
-        description: description,
-        user_name: repo.user_name,
-        repository_name: repo.repository_name,
-        license: license,
-        file_name,
-        hash: hash,
-        filter_str: filterStr,
-        autoupdate_file_name,
+  for (const repo of target_repos) {
+    try {
+      const gql_params = {
+        owner: repo.user_name,
+        name: repo.repository_name,
       };
+      const data = await gql<{ repository: Repository }>(query, gql_params)
+        .then((res) => res.repository);
 
-      const manifest_url = resolve(`${bucketDirPath}${manifest_name}.json`);
+      let license = data.licenseInfo!.spdxId!;
+      if (license.length === 0 || license === "NOASSERTION") {
+        const l = licenseMap.get(repo.repository_name);
+        if (l === undefined) {
+          console.log(`no license for ${repo.repository_name}`);
+        } else {
+          license = l;
+        }
+      }
 
-      await templater.writeToUrl(manifest_url, params);
+      const filterStr = data.name.replaceAll("-", "");
+
+      let latestRelease = data.latestRelease;
+      if (latestRelease === null) {
+        const data = await gql<{ repository: Repository }>(
+          fallback_query,
+          gql_params,
+        );
+        latestRelease = data.repository.releases!.nodes![0];
+      }
+
+      const tagName = latestRelease!.tagName!;
+      const description = data.description!;
+
+      const version = tagName.replace("v", "");
+
+      const assets = latestRelease!.releaseAssets!.nodes!.filter(
+        (asset) => {
+          return asset !== null;
+        },
+      ).filter((asset) => {
+        return asset.name.toUpperCase().includes(filterStr.toUpperCase());
+      });
+
+      const bucketDirPath = "../../bucket/";
+
+      for (const asset of assets) {
+        const downloadUrl = asset.downloadUrl!;
+        const hash = ("digest" in asset && typeof asset.digest === "string")
+          ? formatDigest(asset.digest)
+          : await calc_url_body_hash(downloadUrl);
+
+        const file_name = getFileName(downloadUrl);
+        const autoupdate_file_name = file_name.replaceAll(version, "\$version");
+
+        const params: FontManifestParams = {
+          version: version,
+          description: description,
+          user_name: repo.user_name,
+          repository_name: repo.repository_name,
+          license: license,
+          file_name,
+          hash: hash,
+          filter_str: filterStr,
+          autoupdate_file_name,
+        };
+
+        const manifest = createFontManifest(params);
+
+        const manifest_name = getManifestName(asset.name, version);
+        const manifest_url = resolve(`${bucketDirPath}${manifest_name}.json`);
+
+        if (existsFile(manifest_url)) {
+          Deno.removeSync(manifest_url);
+        }
+
+        Deno.writeTextFileSync(manifest_url, JSON.stringify(manifest, null, 2));
+      }
+      console.log(
+        `${repo.user_name}/${repo.repository_name}: created ${assets.length} manifests`,
+      );
+    } catch (e) {
+      console.log(`error: ${repo.user_name}/${repo.repository_name}`);
+      console.log(e);
     }
+  }
+}
+
+function getManifestName(assetName: string, version: string): string {
+  const name = assetName.replaceAll(`_v${version}`, "")
+    .replaceAll(`v${version}`, "").replaceAll(version, "");
+
+  if (name.endsWith(".zip")) {
+    return name.slice(0, name.length - 4);
+  } else {
+    return name;
   }
 }
 
@@ -169,4 +227,21 @@ function getFileName(url_str: string): string {
   const pathname = (new URL(url_str)).pathname;
   const sIndex = pathname.lastIndexOf("/");
   return sIndex < 0 ? pathname : pathname.slice(sIndex + 1);
+}
+
+function existsFile(url: URL): boolean {
+  try {
+    const stat = Deno.statSync(url);
+    return stat.isFile;
+  } catch (_e) {
+    return false;
+  }
+}
+
+function formatDigest(digest: string): string {
+  if (digest.startsWith("sha256:")) {
+    return digest.slice(7);
+  } else {
+    return digest;
+  }
 }

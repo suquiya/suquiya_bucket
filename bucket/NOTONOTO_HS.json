@@ -1,13 +1,13 @@
 {
-  "version": "3.0.0",
-  "description": "IBM Plex Mono と IBM Plex Sans JP を合成したプログラミングフォント PlemolJP (プレモル ジェイピー)",
-  "homepage": "https://github.com/yuru7/PlemolJP",
+  "version": "0.0.3",
+  "description": "NOTONOTO は、Noto Sans Mono と Noto Sans JP を合成したプログラミング向けフォントです。",
+  "homepage": "https://github.com/yuru7/NOTONOTO",
   "license": "OFL-1.1",
-  "url": "https://github.com/yuru7/PlemolJP/releases/download/v3.0.0/PlemolJP_v3.0.0.zip",
-  "hash": "757de5ab50fe4f44bb3a3bffcbffec24f18af33dca9bd4e5d7949158fa84533e",
+  "url": "https://github.com/yuru7/NOTONOTO/releases/download/v0.0.3/NOTONOTO_HS_v0.0.3.zip",
+  "hash": "faf5b6514a969e19517b9fdd6b43373a20348f6df170a6e79b067a397e0d0c04",
   "checkver": "github",
   "autoupdate": {
-    "url": "https://github.com/yuru7/PlemolJP/releases/download/v$version/PlemolJP_v$version.zip"
+    "url": "https://github.com/yuru7/NOTONOTO/releases/download/v$version/NOTONOTO_HS_v$version.zip"
   },
   "installer": {
     "script": [
@@ -41,7 +41,7 @@
       "}",
       "$registryRoot = if ($global) { \"HKLM\" } else { \"HKCU\" }",
       "$registryKey = \"${registryRoot}:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Fonts\"",
-      "Get-ChildItem $dir -File -Filter PlemolJP -Recurse | Where-Object { @(\".ttf\", \".otf\", \".ttc\") -contains $_.Extension } | ForEach-Object {",
+      "Get-ChildItem $dir -File -Filter NOTONOTO -Recurse | Where-Object { @(\".ttf\", \".otf\", \".ttc\") -contains $_.Extension } | ForEach-Object {",
       "    $value = if ($global) { $_.Name } else { \"$fontInstallDir\\$($_.Name)\" }",
       "    $fontType = if ($_.Extension -eq '.otf') { ' (OpenType)' } else { ' (TrueType)' }",
       "    New-ItemProperty -Path $registryKey -Name $_.Name.Replace($_.Extension, $fontType) -Value $value -Force | Out-Null",
@@ -54,7 +54,7 @@
       "$fontInstallDir = if ($global) { \"$env:windir\\Fonts\" } else { \"$env:LOCALAPPDATA\\Microsoft\\Windows\\Fonts\" }",
       "$registryRoot = if ($global) { \"HKLM\" } else { \"HKCU\" }",
       "$registryKey = \"${registryRoot}:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Fonts\"",
-      "Get-ChildItem $dir -File -Filter PlemolJP -Recurse | ForEach-Object {",
+      "Get-ChildItem $dir -File -Filter NOTONOTO -Recurse | ForEach-Object {",
       "    $fontType = if ($_.Extension -eq '.otf') { ' (OpenType)' } else { ' (TrueType)' }",
       "    Remove-ItemProperty -Path $registryKey -Name $_.Name.Replace($_.Extension, $fontType) -Force -ErrorAction SilentlyContinue",
       "    Remove-Item \"$fontInstallDir\\$($_.Name)\" -Force -ErrorAction SilentlyContinue",
@@ -66,7 +66,7 @@
   },
   "pre_uninstall": [
     "$fontInstallDir = if ($global) { \"$env:windir\\Fonts\" } else { \"$env:LOCALAPPDATA\\Microsoft\\Windows\\Fonts\" }",
-    "Get-ChildItem $dir -File -Filter PlemolJP | ForEach-Object {",
+    "Get-ChildItem $dir -File -Filter NOTONOTO | ForEach-Object {",
     "    Get-ChildItem $fontInstallDir -Filter $_.Name | ForEach-Object {",
     "        try {",
     "            Rename-Item $_.FullName $_.FullName -ErrorVariable LockError -ErrorAction Stop",

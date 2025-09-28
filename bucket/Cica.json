@@ -1,13 +1,13 @@
 {
-  "version": "3.0.0",
-  "description": "IBM Plex Mono と IBM Plex Sans JP を合成したプログラミングフォント PlemolJP (プレモル ジェイピー)",
-  "homepage": "https://github.com/yuru7/PlemolJP",
+  "version": "5.0.3",
+  "description": "プログラミング用日本語等幅フォント Cica(シカ)",
+  "homepage": "https://github.com/miiton/Cica",
   "license": "OFL-1.1",
-  "url": "https://github.com/yuru7/PlemolJP/releases/download/v3.0.0/PlemolJP_v3.0.0.zip",
-  "hash": "757de5ab50fe4f44bb3a3bffcbffec24f18af33dca9bd4e5d7949158fa84533e",
+  "url": "https://github.com/miiton/Cica/releases/download/v5.0.3/Cica_v5.0.3.zip",
+  "hash": "cbd1bcf1f3fd1ddbffe444369c76e42529add8538b25aeb75ab682d398b0506f",
   "checkver": "github",
   "autoupdate": {
-    "url": "https://github.com/yuru7/PlemolJP/releases/download/v$version/PlemolJP_v$version.zip"
+    "url": "https://github.com/miiton/Cica/releases/download/v$version/Cica_v$version.zip"
   },
   "installer": {
     "script": [
@@ -41,7 +41,7 @@
       "}",
       "$registryRoot = if ($global) { \"HKLM\" } else { \"HKCU\" }",
       "$registryKey = \"${registryRoot}:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Fonts\"",
-      "Get-ChildItem $dir -File -Filter PlemolJP -Recurse | Where-Object { @(\".ttf\", \".otf\", \".ttc\") -contains $_.Extension } | ForEach-Object {",
+      "Get-ChildItem $dir -File -Filter Cica -Recurse | Where-Object { @(\".ttf\", \".otf\", \".ttc\") -contains $_.Extension } | ForEach-Object {",
       "    $value = if ($global) { $_.Name } else { \"$fontInstallDir\\$($_.Name)\" }",
       "    $fontType = if ($_.Extension -eq '.otf') { ' (OpenType)' } else { ' (TrueType)' }",
       "    New-ItemProperty -Path $registryKey -Name $_.Name.Replace($_.Extension, $fontType) -Value $value -Force | Out-Null",
@@ -54,7 +54,7 @@
       "$fontInstallDir = if ($global) { \"$env:windir\\Fonts\" } else { \"$env:LOCALAPPDATA\\Microsoft\\Windows\\Fonts\" }",
       "$registryRoot = if ($global) { \"HKLM\" } else { \"HKCU\" }",
       "$registryKey = \"${registryRoot}:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Fonts\"",
-      "Get-ChildItem $dir -File -Filter PlemolJP -Recurse | ForEach-Object {",
+      "Get-ChildItem $dir -File -Filter Cica -Recurse | ForEach-Object {",
       "    $fontType = if ($_.Extension -eq '.otf') { ' (OpenType)' } else { ' (TrueType)' }",
       "    Remove-ItemProperty -Path $registryKey -Name $_.Name.Replace($_.Extension, $fontType) -Force -ErrorAction SilentlyContinue",
       "    Remove-Item \"$fontInstallDir\\$($_.Name)\" -Force -ErrorAction SilentlyContinue",
@@ -66,7 +66,7 @@
   },
   "pre_uninstall": [
     "$fontInstallDir = if ($global) { \"$env:windir\\Fonts\" } else { \"$env:LOCALAPPDATA\\Microsoft\\Windows\\Fonts\" }",
-    "Get-ChildItem $dir -File -Filter PlemolJP | ForEach-Object {",
+    "Get-ChildItem $dir -File -Filter Cica | ForEach-Object {",
     "    Get-ChildItem $fontInstallDir -Filter $_.Name | ForEach-Object {",
     "        try {",
     "            Rename-Item $_.FullName $_.FullName -ErrorVariable LockError -ErrorAction Stop",
