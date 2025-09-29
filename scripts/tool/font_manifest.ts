@@ -22,7 +22,7 @@ function genGetFilesLine(filter_str: string, recursive = true): string {
   const recursiveStr = recursive ? " -Recurse" : "";
   return filter_str === ""
     ? `Get-ChildItem $dir -File${recursiveStr}`
-    : `Get-ChildItem $dir -File -Filter ${filter_str}${recursiveStr}`;
+    : `Get-ChildItem $dir -File -Filter '*${filter_str}*'${recursiveStr}`;
 }
 
 const fontTypeDefLine =

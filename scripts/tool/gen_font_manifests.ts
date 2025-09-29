@@ -220,9 +220,9 @@ function getManifestName(assetName: string, version: string): string {
     .replaceAll(`v${version}`, "").replaceAll(version, "");
 
   if (name.endsWith(".zip")) {
-    return name.slice(0, name.length - 4);
+    return name.slice(0, name.length - 4).replaceAll("_", "-");
   } else {
-    return name;
+    return name.replaceAll("_", "-");
   }
 }
 
