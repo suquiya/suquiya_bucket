@@ -7,9 +7,9 @@
     "genm": "deno run --allow-net --allow-env --allow-read --allow-write --env gen_font_manifests.ts"
   },
   "imports": {
-    "@octokit/graphql": "npm:@octokit/graphql@^9.0.1",
+    "@octokit/graphql": "npm:@octokit/graphql@^9.0.2",
     "@octokit/graphql-schema": "npm:@octokit/graphql-schema@^15.26.0",
-    "@std/assert": "jsr:@std/assert@1",
+    "@std/assert": "jsr:@std/assert@^1.0.15",
     "@std/encoding": "jsr:@std/encoding@^1.0.10"
   }
 }
