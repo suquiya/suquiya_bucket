@@ -5,3 +5,9 @@
 
 Suquiya's personal bucket
 数寄屋の個人的に入れておきたいツール・フォントを入れたbucketです。
+
+## バケット追加方法
+
+```
+scoop bucket add suquiya_bucket https://github.com/suquiya/suquiya_bucket
+```
