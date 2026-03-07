@@ -1,16 +1,16 @@
-import { graphql } from "@octokit/graphql";
 import { Repository } from "@octokit/graphql-schema";
 import { calc_url_body_hash } from "./ufh.ts";
 import { createFontManifest, FontManifestParams } from "./font_manifest.ts";
+import {
+  createGithubGQL,
+  fallback_query,
+  getRepositoryData,
+  RepoIds,
+} from "./github_query.ts";
 
 if (import.meta.main) {
   main();
 }
-
-type RepoIds = {
-  user_name: string;
-  repository_name: string;
-};
 
 function getRepos(): RepoIds[] {
   const github = "https://github.com/";
@@ -29,6 +29,7 @@ function getRepos(): RepoIds[] {
     "https://github.com/yuru7/Explex",
     "https://github.com/yuru7/juisee",
     "https://github.com/yuru7/pending-mono",
+    "https://github.com/githubnext/monaspace",
   ].map((url) => {
     if (url.startsWith(github)) {
       return url.slice(github.length).split("/");
@@ -37,7 +38,7 @@ function getRepos(): RepoIds[] {
     }
   }).filter((url) => {
     // 念のためユーザーネームの誤りを排除
-    return ["yuru7", "miiton"].includes(url[0]);
+    return ["yuru7", "miiton", "githubnext"].includes(url[0]);
   }).map((value) => {
     return {
       user_name: value[0],
@@ -66,62 +67,7 @@ function resolve(relative_path: string): URL {
 async function main() {
   const target_repos = getRepos();
 
-  const gql = graphql.defaults({
-    headers: {
-      authorization: `token ${Deno.env.get("GITHUB_TOKEN")}`,
-    },
-  });
-
-  const query = `query getRepoAndLatestRelease($owner: String!, $name: String!){
-        repository(owner: $owner, name: $name){
-                name,
-                description,
-                licenseInfo {
-                spdxId,
-                },
-                latestRelease{
-                tagName,
-                description,
-                id,
-                resourcePath,
-                releaseAssets(first: 10) {
-                    nodes{
-                        contentType,
-                        downloadUrl,
-                        id,
-                        name,
-                        size,
-                        digest
-                    }
-                }
-            }
-        }
-    }`;
-
-  const fallback_query = `
-    query getLastRelease($owner: String!, $name: String!) {
-        repository(owner: $owner, name: $name) {
-            releases(first: 1, orderBy: {field: CREATED_AT, direction: DESC}) {
-                nodes {
-                    tagName
-                    description
-                    id
-                    resourcePath
-                    releaseAssets(first: 10) {
-                        nodes {
-                            contentType
-                            downloadUrl
-                            id
-                            name
-                            size
-                            digest
-                        }
-                    }
-                }
-            }
-        }
-    }
-  `;
+  const gql = createGithubGQL();
 
   const licenseMap = getLicenseMap();
 
@@ -131,8 +77,7 @@ async function main() {
         owner: repo.user_name,
         name: repo.repository_name,
       };
-      const data = await gql<{ repository: Repository }>(query, gql_params)
-        .then((res) => res.repository);
+      const data = await getRepositoryData(gql, gql_params);
 
       let license = data.licenseInfo!.spdxId!;
       if (license.length === 0 || license === "NOASSERTION") {
