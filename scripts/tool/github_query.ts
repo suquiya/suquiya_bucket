@@ -6,10 +6,6 @@ export type RepoIds = {
   repository_name: string;
 };
 
-function resolve(relative_path: string): URL {
-  return new URL(relative_path, import.meta.url);
-}
-
 export const query =
   `query getRepoAndLatestRelease($owner: String!, $name: String!){
       repository(owner: $owner, name: $name){
@@ -78,6 +74,24 @@ export async function getRepositoryData(
   const data = await client<{ repository: Repository }>(query, params)
     .then((res) => res.repository);
   return data;
+}
+
+export function getLicenseFromRepoData(
+  repo: Repository,
+): string | null {
+  if (
+    repo.licenseInfo === undefined || repo.licenseInfo === null ||
+    repo.licenseInfo.spdxId === undefined
+  ) {
+    return null;
+  }
+  const license = repo.licenseInfo.spdxId;
+  if (
+    license === null || license.length === 0 || license === "NOASSERTION"
+  ) {
+    return null;
+  }
+  return license;
 }
 
 if (import.meta.main) {
