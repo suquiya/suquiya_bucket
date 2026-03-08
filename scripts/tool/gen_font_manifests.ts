@@ -1,9 +1,8 @@
-import { Repository } from "@octokit/graphql-schema";
 import { calc_url_body_hash } from "./ufh.ts";
 import { createFontManifest, FontManifestParams } from "./font_manifest.ts";
 import {
   createGithubGQL,
-  fallback_query,
+  getLatestRelease,
   getRepositoryData,
   RepoIds,
 } from "./github_query.ts";
@@ -91,14 +90,7 @@ async function main() {
 
       const filterStr = data.name.replaceAll("-", "");
 
-      let latestRelease = data.latestRelease;
-      if (latestRelease === null) {
-        const data = await gql<{ repository: Repository }>(
-          fallback_query,
-          gql_params,
-        );
-        latestRelease = data.repository.releases!.nodes![0];
-      }
+      const latestRelease = await getLatestRelease(data, gql, gql_params);
 
       const tagName = latestRelease!.tagName!;
       const description = data.description!;
@@ -161,7 +153,10 @@ async function main() {
 }
 
 function getManifestName(assetName: string, version: string): string {
-  const name = assetName.replaceAll(`_v${version}`, "")
+  const name = assetName.replaceAll(`_v${version}`, "").replaceAll(
+    `-v${version}`,
+    "",
+  )
     .replaceAll(`v${version}`, "").replaceAll(version, "");
 
   if (name.endsWith(".zip")) {

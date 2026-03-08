@@ -1,12 +1,12 @@
 import { graphql } from "@octokit/graphql";
-import { Repository } from "@octokit/graphql-schema";
+import { Release, Repository } from "@octokit/graphql-schema";
 
 export type RepoIds = {
   user_name: string;
   repository_name: string;
 };
 
-export const query =
+export const get_repo_and_latest_release_query =
   `query getRepoAndLatestRelease($owner: String!, $name: String!){
       repository(owner: $owner, name: $name){
               name,
@@ -33,7 +33,7 @@ export const query =
       }
   }`;
 
-export const fallback_query = `
+export const get_last_release_query = `
   query getLastRelease($owner: String!, $name: String!) {
       repository(owner: $owner, name: $name) {
           releases(first: 1, orderBy: {field: CREATED_AT, direction: DESC}) {
@@ -71,7 +71,10 @@ export async function getRepositoryData(
   client: typeof graphql,
   params: { owner: string; name: string },
 ): Promise<Repository> {
-  const data = await client<{ repository: Repository }>(query, params)
+  const data = await client<{ repository: Repository }>(
+    get_repo_and_latest_release_query,
+    params,
+  )
     .then((res) => res.repository);
   return data;
 }
@@ -92,6 +95,25 @@ export function getLicenseFromRepoData(
     return null;
   }
   return license;
+}
+
+export async function getLatestRelease(
+  repo: Repository,
+  client: typeof graphql,
+  params: { owner: string; name: string },
+): Promise<Release | null> {
+  let latestRelease = repo.latestRelease;
+  if (latestRelease === null) {
+    const data = await client<{ repository: Repository }>(
+      get_last_release_query,
+      params,
+    );
+    latestRelease = data.repository.releases?.nodes?.at(0);
+  }
+  if (latestRelease === undefined) {
+    return null;
+  }
+  return latestRelease;
 }
 
 if (import.meta.main) {
