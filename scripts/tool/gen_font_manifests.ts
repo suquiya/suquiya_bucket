@@ -122,7 +122,7 @@ async function main() {
           description: description,
           user_name: repo.user_name,
           repository_name: repo.repository_name,
-          license: license,
+          license: license!,
           file_name,
           hash: hash,
           filter_str: filterStr,
