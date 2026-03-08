@@ -3,6 +3,7 @@ import { createFontManifest, FontManifestParams } from "./font_manifest.ts";
 import {
   createGithubGQL,
   getLatestRelease,
+  getLicenseFromRepoData,
   getRepositoryData,
   RepoIds,
 } from "./github_query.ts";
@@ -78,8 +79,8 @@ async function main() {
       };
       const data = await getRepositoryData(gql, gql_params);
 
-      let license = data.licenseInfo!.spdxId!;
-      if (license.length === 0 || license === "NOASSERTION") {
+      let license = getLicenseFromRepoData(data);
+      if (license === null) {
         const l = licenseMap.get(repo.repository_name);
         if (l === undefined) {
           console.log(`no license for ${repo.repository_name}`);
