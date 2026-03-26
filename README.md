@@ -4,7 +4,8 @@
 [![Excavator](https://github.com/suquiya/suquiya_bucket/actions/workflows/excavator.yml/badge.svg)](https://github.com/suquiya/suquiya_bucket/actions/workflows/excavator.yml)
 
 Suquiya's personal bucket
-数寄屋の個人的に入れておきたいツール・フォントを入れたbucketです。
+
+数寄屋の自作ツール・個人的にscoopパッケージにしておきたいフォント(プログラミングフォント等)を入れたbucketです。
 
 ## バケット追加方法
 
