@@ -3,9 +3,11 @@
 [![Tests](https://github.com/suquiya/suquiya_bucket/actions/workflows/ci.yml/badge.svg)](https://github.com/suquiya/suquiya_bucket/actions/workflows/ci.yml)
 [![Excavator](https://github.com/suquiya/suquiya_bucket/actions/workflows/excavator.yml/badge.svg)](https://github.com/suquiya/suquiya_bucket/actions/workflows/excavator.yml)
 
-Suquiya's personal bucket
+Suquiya's bucket. This bucket contains manifests for various fonts and some tools that suquiya personally use.
+This bucket is not limited to suquiya's use only. Anyone can use this bucket. But please use it at your own risk.
 
 数寄屋の自作ツール・個人的にscoopパッケージにしておきたいフォント(プログラミングフォント等)を入れたbucketです。
+数寄屋専用ではありませんので、ほかの方が使ってもおそらく大丈夫だとは思いますが、使用する場合は自己責任でお願いいたします。
 
 ## 収録しているManifestの概要(Overview of manifests that this bucket contains)
 
