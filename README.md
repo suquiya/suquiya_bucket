@@ -35,7 +35,7 @@ All manifests of this bucket: [here](https://scoop.sh/#/apps?q=%22https%3A%2F%2F
 以下の（主に自分用ですが、おおよそ汎用の）スクリプトを置いています。
 
 + zipdu: URLからzipファイルをダウンロードし、解凍する
-    + なお、解凍後エクスプローラーで解凍先を開くので、解凍先が行方不明になることはありません。
+    + 注: 解凍後エクスプローラーで解凍先を開くので、解凍先が行方不明になることはありません。
 + zipduif: zipduと同じ動作をしたのち、解凍したものの中にフォントがあればそのフォントを開く
     + フォントについては、一括インストールにするとセキュリティ上懸念があるので、インストールするフォントをユーザーが選べるようにするためこのような動作にしています
 
@@ -46,7 +46,7 @@ All manifests of this bucket: [here](https://scoop.sh/#/apps?q=%22https%3A%2F%2F
 
 + [rara](https://github.com/suquiya/rara): パスワードジェネレータ
 
-## バケット追加方法(How to add this bucket)
+## bucket追加方法(How to add this bucket)
 
 ```
 scoop bucket add suquiya_bucket https://github.com/suquiya/suquiya_bucket
