@@ -140,7 +140,7 @@ async function main() {
 
         Deno.writeTextFileSync(
           manifest_url,
-          JSON.stringify(manifest, null, 2) + "\r\n",
+          JSON.stringify(manifest, null, 4) + "\r\n",
         );
       }
       console.log(
