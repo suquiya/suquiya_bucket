@@ -1,16 +1,17 @@
 {
-  "tasks": {
-    /** run hash calc helper */
-    "ufh": "deno run --allow-net ufh.ts",
-    "dev-ufh": "deno run --watch --allow-net ufh.ts",
-    /** run font manifest generator */
-    "genm": "deno run --allow-net --allow-env --allow-read --allow-write --env gen_font_manifests.ts",
-    "ghquery": "deno run --allow-net --allow-env --env github_query.ts"
-  },
-  "imports": {
-    "@octokit/graphql": "npm:@octokit/graphql@^9.0.2",
-    "@octokit/graphql-schema": "npm:@octokit/graphql-schema@^15.26.0",
-    "@std/assert": "jsr:@std/assert@^1.0.15",
-    "@std/encoding": "jsr:@std/encoding@^1.0.10"
-  }
+    "tasks": {
+        /** run hash calc helper */
+        "ufh": "deno run --allow-net ufh.ts",
+        "dev-ufh": "deno run --watch --allow-net ufh.ts",
+        /** run font manifest generator */
+        "genm": "deno run --allow-net --allow-env --allow-read --allow-write --env gen_font_manifests.ts",
+        "ghquery": "deno run --allow-net --allow-env --env github_query.ts",
+    },
+    "imports": {
+        "@octokit/graphql": "npm:@octokit/graphql@^9.0.3",
+        "@octokit/graphql-schema": "npm:@octokit/graphql-schema@^15.26.1",
+        "@std/assert": "jsr:@std/assert@^1.0.19",
+        "@std/encoding": "jsr:@std/encoding@^1.0.10",
+    },
+    "minimumDependencyAge": "P7D",
 }

@@ -124,6 +124,16 @@ async function main() {
   // graphQLのテスト
   const client = createGithubGQL();
   const params = { owner: "githubnext", name: "monaspace" };
-  const data = await getRepositoryData(client, params);
-  console.log(data);
+  try {
+    const data = await getRepositoryData(client, params);
+    console.log(data);
+  } catch (e) {
+    console.log("エラー:", e);
+    console.log("stringify:", JSON.stringify(e));
+    if (e instanceof Error) {
+      console.log("メッセージ:", e.message);
+    } else {
+      console.log(e);
+    }
+  }
 }

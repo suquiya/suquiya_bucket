@@ -149,6 +149,17 @@ async function main() {
     } catch (e) {
       console.log(`error: ${repo.user_name}/${repo.repository_name}`);
       console.log(e);
+      if (
+        e instanceof Error && e.name === "HttpError" && "status" in e &&
+        typeof e.status === "number" && e.status >
+          400
+      ) {
+        console.log(`status: ${e.status}`);
+        if (e.status === 401) {
+          console.log("認証情報が正しくありません");
+        }
+        break;
+      }
     }
   }
 }
