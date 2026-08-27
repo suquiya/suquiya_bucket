@@ -5,7 +5,8 @@
         "dev-ufh": "deno run --watch --allow-net ufh.ts",
         /** run font manifest generator */
         "genm": "deno run --allow-net --allow-env --allow-read --allow-write --env gen_font_manifests.ts",
-        "ghquery": "deno run --allow-net --allow-env --env github_query.ts"
+        "ghquery": "deno run --allow-net --allow-env --env github_query.ts",
+        "bup": "deno run --allow-run --allow-read --allow-env --env base_update.ts"
     },
     "imports": {
         "@octokit/graphql": "npm:@octokit/graphql@^9.0.3",

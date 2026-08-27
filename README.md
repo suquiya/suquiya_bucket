@@ -28,7 +28,7 @@ All manifests of this bucket: [here](https://scoop.sh/#/apps?q=%22https%3A%2F%2F
 詳細はscoop bucketに追加後searchいただくか、前述したリストをご確認ください。
 自動更新になっているはずなので、最新のものがインストールできると思います。
 
-※Manifestの作成スクリプトは[こちら](https://github.com/suquiya/suquiya_bucket/tree/main/scripts/tool)から確認可能です。
+※Manifestの作成スクリプトはこのリポジトリのscripts/tool内で管理しており、[こちら](https://github.com/suquiya/suquiya_bucket/tree/main/scripts/tool)から確認可能です。
 
 ### 数寄屋作ユーティリティ(Application created by suquiya)
 #### PowerShellスクリプト(PowerShell Script)
