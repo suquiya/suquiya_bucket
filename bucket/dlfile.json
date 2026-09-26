@@ -1,10 +1,10 @@
 {
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "dl from url, open destination folder in explorer with select downloaded file",
     "homepage": "https://github.com/suquiya/psutil",
     "license": "The Unlicense",
     "url": "https://raw.githubusercontent.com/suquiya/psutil/refs/heads/main/dlfile.ps1",
-    "hash": "1cf555badec6c0581bbae2080e8cd8cfcf75bdee309dc96b8f48aa19a12ca63b",
+    "hash": "e91465b5ea9bdd069043d6e9ffa20352be8bb2cbd6076fb0cfe3e86ce853b376",
     "bin": [
         [
             "dlfile.ps1",
