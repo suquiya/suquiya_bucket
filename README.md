@@ -3,7 +3,9 @@
 [![Tests](https://github.com/suquiya/suquiya_bucket/actions/workflows/ci.yml/badge.svg)](https://github.com/suquiya/suquiya_bucket/actions/workflows/ci.yml)
 [![Excavator](https://github.com/suquiya/suquiya_bucket/actions/workflows/excavator.yml/badge.svg)](https://github.com/suquiya/suquiya_bucket/actions/workflows/excavator.yml)
 
-Suquiya's bucket. This bucket contains manifests for various fonts and some tools that suquiya personally use.
+Suquiya's bucket. This bucket contains manifests for:
++ various fonts that suquiya personally use
++ some tools that suquiya's tools created by suquiya
 
 This bucket is not limited to suquiya's use only. Anyone can use this bucket. But please use it at your own risk.
 
